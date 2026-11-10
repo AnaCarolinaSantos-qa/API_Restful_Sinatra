@@ -33,7 +33,7 @@ jobs:
         run: cp mongoid_example.yml mongoid.yml
       - name: Start the API
         run: |
-          bundle exec ruby app.rb -p 4567 > /tmp/sinatra.log 2>&1 &
+          bundle exec rackup config.ru -o 0.0.0.0 -p 4567 > /tmp/sinatra.log 2>&1 &
           for attempt in $(seq 1 30); do
             if curl --silent --output /dev/null http://127.0.0.1:4567/; then
               exit 0
