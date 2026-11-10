@@ -35,7 +35,7 @@ jobs:
         run: |
           bundle exec ruby app.rb -p 4567 > /tmp/sinatra.log 2>&1 &
           for attempt in $(seq 1 30); do
-            if curl --silent --fail http://127.0.0.1:4567/ > /dev/null; then
+            if curl --silent --output /dev/null http://127.0.0.1:4567/; then
               exit 0
             fi
             sleep 1
