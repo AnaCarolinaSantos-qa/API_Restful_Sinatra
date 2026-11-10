@@ -28,7 +28,7 @@ describe "GET /books/:_id" do
             @payload = { title: "Helena", author: "Machado de Assis", isbn: Faker::Code.isbn }
 
             book = BaseApi.post("/books", body: @payload.to_json)
-            book_id = book.parsed_response["_id"]
+            book_id = book.parsed_response.dig("_id", "$oid")
             
             # @resp = BaseApi.get("/books/_id")
             @resp = BaseApi.get("/books/#{book_id}")

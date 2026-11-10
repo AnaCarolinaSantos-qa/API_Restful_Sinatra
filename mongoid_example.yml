@@ -1,6 +1,6 @@
 development:
   clients:
     default:
-      uri: mongodb+srv:
+      uri: mongodb://127.0.0.1:27017/books
       options:
         server_selection_timeout: 5
