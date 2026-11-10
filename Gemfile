@@ -9,4 +9,5 @@ gem "sinatra-contrib"
 gem "faker"
 # Rack 2.2 requires these libraries, which are no longer default gems in Ruby 3.4.
 gem "base64"
+gem "mutex_m"
 gem "ostruct"
