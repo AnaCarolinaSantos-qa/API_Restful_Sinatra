@@ -1,0 +1,46 @@
+name: Ruby API CI
+
+on:
+  push:
+    branches: [master]
+  pull_request:
+    branches: [master]
+
+permissions:
+  contents: read
+
+jobs:
+  specs:
+    runs-on: ubuntu-latest
+    services:
+      mongodb:
+        image: mongo:5.0
+        ports:
+          - 27017:27017
+        options: >-
+          --health-cmd "mongosh --quiet --eval 'db.adminCommand({ ping: 1 })'"
+          --health-interval 10s
+          --health-timeout 5s
+          --health-retries 5
+    steps:
+      - uses: actions/checkout@v4
+      - uses: ruby/setup-ruby@v1
+        with:
+          ruby-version: "2.7"
+      - name: Install dependencies
+        run: bundle install
+      - name: Configure local MongoDB
+        run: cp mongoid_example.yml mongoid.yml
+      - name: Start the API
+        run: |
+          bundle exec ruby app.rb -p 4567 > /tmp/sinatra.log 2>&1 &
+          for attempt in $(seq 1 30); do
+            if curl --silent --fail http://127.0.0.1:4567/ > /dev/null; then
+              exit 0
+            fi
+            sleep 1
+          done
+          cat /tmp/sinatra.log
+          exit 1
+      - name: Run RSpec
+        run: bundle exec rspec
